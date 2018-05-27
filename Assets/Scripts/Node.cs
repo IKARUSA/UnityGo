@@ -64,7 +64,7 @@ public class Node : MonoBehaviour {
         if(graphic != null)
         {
             iTween.ScaleTo(graphic, iTween.Hash(
-                "scale", Vector3.one,
+                "scale", Vector3.one * .4f,
                 "time", scaleTime,
                 "easetype", easeType,
                 "delay", delay));
@@ -107,7 +107,7 @@ public class Node : MonoBehaviour {
 
     IEnumerator InitNeighborsRoutine()
     {
-        yield return new WaitForSeconds(.3f);
+        yield return new WaitForSeconds(.15f);
         foreach(Node neighbor in m_neighborNodes)
         {
             if (!m_linkedNodes.Contains(neighbor))
@@ -156,6 +156,15 @@ public class Node : MonoBehaviour {
         for (int i = m_linkedNodes.Count-1; i >= 0; i--)
         {
             DeleteLink(m_linkedNodes[i]);
+        }
+    }
+
+    public void DeleteAllLinkExcept(List<Node> exceptNodes)
+    {
+        for (int i = m_linkedNodes.Count - 1; i >= 0; i--)
+        {
+            if(!exceptNodes.Contains(m_linkedNodes[i]))
+                DeleteLink(m_linkedNodes[i]);
         }
     }
 

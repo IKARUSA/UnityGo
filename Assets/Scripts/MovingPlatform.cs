@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Node))]
 public class MovingPlatform : MonoBehaviour {
 
     [SerializeField]
@@ -10,7 +9,8 @@ public class MovingPlatform : MonoBehaviour {
 
     Board m_board;
 
-    Node m_node;
+    [SerializeField]
+    List<Node> m_node;
 
     protected GameManager m_gameManager;
 
@@ -27,7 +27,6 @@ public class MovingPlatform : MonoBehaviour {
     {
         m_gameManager = Object.FindObjectOfType<GameManager>();
         m_board = Object.FindObjectOfType<Board>();
-        m_node = GetComponent<Node>();
         if (spotToMove != null && spotToMove.Count > 0)
         {
             this.transform.position = spotToMove[0].position;
@@ -47,10 +46,13 @@ public class MovingPlatform : MonoBehaviour {
             Debug.LogWarning("NoSpotToMove in movingPlatform");
         }
         //노드 링크 지우고
-        m_node.DeleteAllLink();
-        yield return new WaitForSeconds(.5f);
+        foreach(Node n in m_node)
+        {
+            n.DeleteAllLinkExcept(m_node);
+        }
+        yield return new WaitForSeconds(.2f);
         //이동
-        if(m_node == m_board.PlayerNode)
+        if(m_node.Contains(m_board.PlayerNode))
         {
             BindPlayer();
         }
@@ -70,14 +72,17 @@ public class MovingPlatform : MonoBehaviour {
         nextSpotIndex++;
         //노드 상태 업데이트
         UnBindPlayer();
-        m_node.UpdateNodeStatus();
+        foreach(Node n in m_node)
+        {
+            n.UpdateNodeStatus();
+        }
     }
 
     private void BindPlayer()
     {
         GameObject player = Object.FindObjectOfType<PlayerManager>().gameObject;
         iTween.Stop(player);
-        player.transform.position = transform.position;
+        player.transform.position = m_board.PlayerNode.transform.position;
         player.transform.parent = this.transform;
     }
 

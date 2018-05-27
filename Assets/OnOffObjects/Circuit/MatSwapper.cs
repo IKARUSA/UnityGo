@@ -2,25 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Circuit : OnOffObject
+public class MatSwapper : OnOffObject
 {
     [SerializeField]
-    Material offMat;
+    Material[] offmats;
     [SerializeField]
-    Material onMat;
+    Material[] onmats;
 
     Renderer render;
-
-    Material[] offmats;
-    Material[] onmats;
 
     private void Awake()
     {
         render = GetComponent<Renderer>();
-        offmats = new Material[1];
-        onmats = new Material[1];
-        offmats[0] = offMat;
-        onmats[0] = onMat;
 
         TurnOff();
     }

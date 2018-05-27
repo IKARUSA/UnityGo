@@ -7,7 +7,10 @@ using UnityEngine;
 public class PlayerManager : TurnManager {
 
     PlayerInput input;
+    public PlayerInput Input { get { return input; } }
+
     PlayerMover m_playerMover;
+
 
     protected override void Awake()
     {
@@ -20,25 +23,25 @@ public class PlayerManager : TurnManager {
     {
         if (m_isTurnComplete || m_playerMover.IsMoving)
             return;
-        input.GetInput();
+        Input.GetInput();
         ProcessInput();
     }
 
     private void ProcessInput()
     {
-        if (input.H > Mathf.Epsilon)
+        if (Input.H > Mathf.Epsilon)
         {
             m_playerMover.MoveRight();
         }
-        else if (input.H < -Mathf.Epsilon)
+        else if (Input.H < -Mathf.Epsilon)
         {
             m_playerMover.MoveLeft();
         }
-        else if (input.V > Mathf.Epsilon)
+        else if (Input.V > Mathf.Epsilon)
         {
             m_playerMover.MoveForward();
         }
-        else if (input.V < -Mathf.Epsilon)
+        else if (Input.V < -Mathf.Epsilon)
         {
             m_playerMover.MoveBackward();
         }

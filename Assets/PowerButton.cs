@@ -14,9 +14,11 @@ public class PowerButton : ObjectManager {
     [SerializeField]
     Node targetNode;
 
+    [SerializeField]
+    TextMesh informText;
+
     public override void PlayTurn()
     {
-
         if(targetNode != null && targetNode == m_board.PlayerNode)
         {
             currentDuration = maxDuration;
@@ -34,8 +36,13 @@ public class PowerButton : ObjectManager {
                 TurnBindings(false);
             }
         }
+        if(currentDuration >= 0)
+        {
+            informText.text = currentDuration.ToString();
+        }
         base.PlayTurn();
     }
+    
 
     private void TurnBindings(bool state)
     {
@@ -47,4 +54,6 @@ public class PowerButton : ObjectManager {
                 bindingObject.TurnOff();
         }
     }
+
+
 }
