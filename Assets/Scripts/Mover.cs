@@ -20,6 +20,9 @@ public class Mover : MonoBehaviour {
     float delay;
 
     [SerializeField]
+    Animator moveAnim;
+
+    [SerializeField]
     iTween.EaseType easeType = iTween.EaseType.linear;
 
     bool isMoving = false;
@@ -70,7 +73,15 @@ public class Mover : MonoBehaviour {
             "time", moveTime,
             "easetype", easeType,
             "delay", delay));
-        yield return new WaitForSeconds(moveTime + delay +.3f);
+        if (moveAnim != null)
+        {
+            moveAnim.SetFloat("Speed", .2f);
+            moveAnim.transform.rotation = Quaternion.LookRotation(m_nextNode.Coordinate - transform.position);
+        }
+        yield return new WaitForSeconds(moveTime + delay);
+
+        if (moveAnim != null)
+            moveAnim.SetFloat("Speed", 0f);
         isMoving = false;
         if (endMoveEvent != null)
             endMoveEvent.Invoke();

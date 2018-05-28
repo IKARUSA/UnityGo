@@ -16,11 +16,13 @@ public class PowerButton : ObjectManager {
 
     [SerializeField]
     TextMesh informText;
-
+    [SerializeField]
+    GameObject informGameObject;
     public override void PlayTurn()
     {
         if(targetNode != null && targetNode == m_board.PlayerNode)
         {
+            iTween.ScaleTo(informGameObject, iTween.Hash("scale", Vector3.one, "time", .5f));
             currentDuration = maxDuration;
             TurnBindings(true);
         }
@@ -39,6 +41,10 @@ public class PowerButton : ObjectManager {
         if(currentDuration >= 0)
         {
             informText.text = currentDuration.ToString();
+        }
+        else
+        {
+            iTween.ScaleTo(informGameObject, iTween.Hash("scale", Vector3.zero, "time", .5f));
         }
         base.PlayTurn();
     }
