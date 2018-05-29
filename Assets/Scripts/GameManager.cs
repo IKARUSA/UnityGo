@@ -72,7 +72,6 @@ public class GameManager : MonoBehaviour {
     {
         if (startLevelEvent != null)
             startLevelEvent.Invoke();
-        Time.timeScale = 0f;
         m_player.Input.InputEnabled = false;
         yield return null;
         while (!m_hasLevelStarted)
@@ -83,7 +82,6 @@ public class GameManager : MonoBehaviour {
 
     private IEnumerator PlayLevelRoutine()
     {
-        Time.timeScale = 1f;
         if (playLevelEvent != null)
             playLevelEvent.Invoke();
         yield return new WaitForSeconds(3f);

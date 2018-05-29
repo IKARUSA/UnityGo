@@ -23,9 +23,18 @@ public class Board : MonoBehaviour {
     PlayerMover m_playerMover;
     public Node PlayerNode { get { return m_playerMover.CuurentNode; } }
 
+    [SerializeField]
+    bool drawOnStart = false;
+
     private void Awake()
     {
         InitBoard();
+    }
+
+    private void Start()
+    {
+        if (drawOnStart)
+            DrawBoard();
     }
 
     private void InitBoard()
@@ -37,6 +46,14 @@ public class Board : MonoBehaviour {
         if (m_goalNode == null)
         {
             Debug.LogWarning("No Goal Node!");
+        }
+    }
+
+    public void DrawBoard()
+    {
+        foreach(Node n in m_allNodes)
+        {
+            n.FirstDraw();
         }
     }
 

@@ -86,14 +86,23 @@ public class MenuManager : MonoBehaviour {
 
     public void CloseMenu()
     {
-        if(m_menuStack.Count >= 1)
+        if (m_menuStack.Count >= 1)
         {
             m_menuStack.Pop().gameObject.SetActive(false);
-            m_menuStack.Peek().gameObject.SetActive(true);
+            if(m_menuStack.Count >= 1)
+                m_menuStack.Peek().gameObject.SetActive(true);
         }
         else
         {
-            Debug.LogWarning("Attempt to close menu | only one in stack!");
+            Debug.LogWarning("Attempt close menu but there is only one menu available!");
+        }
+    }
+
+    public void CloseAll()
+    {
+        while(m_menuStack.Count >= 1)
+        {
+            m_menuStack.Pop().gameObject.SetActive(false);
         }
     }
 }

@@ -58,9 +58,13 @@ public class Node : MonoBehaviour {
             graphic.transform.localScale = Vector3.zero;
             if (m_board != null)
                 m_neighborNodes = FindNeighbors(m_board.AllNodes);
-            if (autoRun)
-                InitNode();
         }
+    }
+
+    public void FirstDraw()
+    {
+        if (autoRun)
+            InitNode();
     }
 
     public void ShowGraphic()
