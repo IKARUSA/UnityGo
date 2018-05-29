@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour {
 
@@ -12,6 +14,8 @@ public class GameManager : MonoBehaviour {
     };
 
     private Turn currentTurn;
+
+    Board m_board;
 
     PlayerManager m_player;
 
@@ -34,13 +38,19 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     float delay = 1f;
 
+    [SerializeField]
+    UnityEvent startLevelEvent;
+    [SerializeField]
+    UnityEvent playLevelEvent;
+    [SerializeField]
+    UnityEvent endLevelEvent;
+
     private void Awake()
     {
-        m_player = Object.FindObjectOfType<PlayerManager>();
-        m_enemies = new List<EnemyManager>(Object.FindObjectsOfType<EnemyManager>());
-        m_objects = new List<ObjectManager>(Object.FindObjectsOfType<ObjectManager>());
-        List<TurnManager> tempList = new List<TurnManager>(Object.FindObjectsOfType<TurnManager>());
-        Debug.Log(tempList.Count);
+        m_board = GameObject.FindObjectOfType<Board>();
+        m_player = GameObject.FindObjectOfType<PlayerManager>();
+        m_enemies = new List<EnemyManager>(GameObject.FindObjectsOfType<EnemyManager>());
+        m_objects = new List<ObjectManager>(GameObject.FindObjectsOfType<ObjectManager>());
     }
 
     private void Start()
@@ -60,27 +70,54 @@ public class GameManager : MonoBehaviour {
 
     private IEnumerator StartLevelRoutine()
     {
+        if (startLevelEvent != null)
+            startLevelEvent.Invoke();
         Time.timeScale = 0f;
         m_player.Input.InputEnabled = false;
-        //while (!m_hasLevelStarted)
-        //{
-        //    yield return null;
-        //}
         yield return null;
+        while (!m_hasLevelStarted)
+        {
+            yield return null;
+        }
     }
 
     private IEnumerator PlayLevelRoutine()
     {
         Time.timeScale = 1f;
-        yield return new WaitForSeconds(7f);
+        if (playLevelEvent != null)
+            playLevelEvent.Invoke();
+        yield return new WaitForSeconds(3f);
         m_player.Input.InputEnabled = true;
-        yield return null;
+        while(!m_isGameOver){
+            yield return null;
+            m_isGameOver = IsWinner();
+        }
+    }
+
+    private bool IsWinner()
+    {
+        if (m_board.PlayerNode != null && m_board.GoalNode != null)
+        {
+            return m_board.PlayerNode == m_board.GoalNode;
+        }
+        else
+            return false;
     }
 
     private IEnumerator EndLevelRoutine()
     {
+        m_player.Input.InputEnabled = false;
+        if (endLevelEvent != null)
+            endLevelEvent.Invoke();
         yield return null;
     }
+
+    public void PlayLevel()
+    {
+        m_hasLevelStarted = true;
+    }
+
+    #region turnManaging
 
     public void UpdateTurn()
     {
@@ -107,7 +144,6 @@ public class GameManager : MonoBehaviour {
         }
         return true;
     }
-    
 
     private void PlayEnemyTurn()
     {
@@ -159,4 +195,6 @@ public class GameManager : MonoBehaviour {
             m_player.IsTurnComplete = false;
         }
     }
+    #endregion
+    
 }

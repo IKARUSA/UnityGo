@@ -8,6 +8,10 @@ public class MenuManager : MonoBehaviour {
 
     [SerializeField]
     MainMenu mainMenuPrefab;
+    [SerializeField]
+    CreditMenu creditMenuPrefab;
+    [SerializeField]
+    StageSelectMenu stageSelectMenuPrefab;
 
     [SerializeField]
     Transform m_menuParent;
@@ -41,6 +45,9 @@ public class MenuManager : MonoBehaviour {
             GameObject menuParentObject = new GameObject("Menus");
             m_menuParent = menuParentObject.transform;
         }
+
+        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(m_menuParent.gameObject);
 
         BindingFlags flags = BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance;
         Type myType = this.GetType();
@@ -79,7 +86,7 @@ public class MenuManager : MonoBehaviour {
 
     public void CloseMenu()
     {
-        if(m_menuStack.Count > 1)
+        if(m_menuStack.Count >= 1)
         {
             m_menuStack.Pop().gameObject.SetActive(false);
             m_menuStack.Peek().gameObject.SetActive(true);

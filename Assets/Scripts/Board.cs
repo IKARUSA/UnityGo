@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Board : MonoBehaviour {
 
+    Node m_goalNode;
+    public Node GoalNode { get { return m_goalNode; } set { m_goalNode = value; } }
+
     public static float spacing = 2f;
 
     public static Vector2[] directions =
@@ -22,9 +25,24 @@ public class Board : MonoBehaviour {
 
     private void Awake()
     {
-        Node[] allnodes = Object.FindObjectsOfType<Node>();
+        InitBoard();
+    }
+
+    private void InitBoard()
+    {
+        Node[] allnodes = FindObjectsOfType<Node>();
         m_allNodes = new List<Node>(allnodes);
         m_playerMover = Object.FindObjectOfType<PlayerMover>();
+        m_goalNode = FindGoalNode();
+        if (m_goalNode == null)
+        {
+            Debug.LogWarning("No Goal Node!");
+        }
+    }
+
+    Node FindGoalNode()
+    {
+        return m_allNodes.Find(n => n.IsGoalNode == true);
     }
 
     public Node GetNodeAt(Vector3 pos)

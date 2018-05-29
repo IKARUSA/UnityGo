@@ -37,6 +37,10 @@ public class Node : MonoBehaviour {
     [SerializeField]
     bool autoRun = false;
 
+    [SerializeField]
+    bool isGoalNode = false;
+    public bool IsGoalNode { get { return isGoalNode; } }
+
     bool isInitialized = false;
 
     [SerializeField]

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Canvas))]
 public class Menu<T> : Menu where T : Menu<T>
 {
     private static T instance;
@@ -40,7 +41,7 @@ public class Menu : MonoBehaviour
 
 	public virtual void OnBackPressed()
     {
-
+        MenuManager.Instance.CloseMenu();
     }
     
 }
