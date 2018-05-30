@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour {
 
     private Turn currentTurn;
 
+    private Turn prevTurn;
+
     Board m_board;
 
     PlayerManager m_player;
@@ -22,6 +24,8 @@ public class GameManager : MonoBehaviour {
     List<EnemyManager> m_enemies;
 
     List<ObjectManager> m_objects;
+
+    List<Mover> m_allMover;
 
     bool m_hasLevelStarted = false;
     public bool HasLevelStarted { get { return m_hasLevelStarted; } set { m_hasLevelStarted = value; } }
@@ -51,6 +55,7 @@ public class GameManager : MonoBehaviour {
         m_player = GameObject.FindObjectOfType<PlayerManager>();
         m_enemies = new List<EnemyManager>(GameObject.FindObjectsOfType<EnemyManager>());
         m_objects = new List<ObjectManager>(GameObject.FindObjectsOfType<ObjectManager>());
+        m_allMover = new List<Mover>(GameObject.FindObjectsOfType<Mover>());
     }
 
     private void Start()
@@ -88,7 +93,6 @@ public class GameManager : MonoBehaviour {
         m_player.Input.InputEnabled = true;
         while(!m_isGameOver){
             yield return null;
-            m_isGameOver = IsWinner();
         }
     }
 
@@ -122,15 +126,21 @@ public class GameManager : MonoBehaviour {
         switch (currentTurn)
         {
             case Turn.Player:
-                PlayEnemyTurn();
+                prevTurn = Turn.Player;
+                PlayObjectTurn();
                 break;
             case Turn.Enemy:
+                prevTurn = Turn.Enemy;
                 PlayObjectTurn();
                 break;
             case Turn.Object:
-                PlayPlayerTurn();
+                if (prevTurn == Turn.Player)
+                    PlayEnemyTurn();
+                else
+                    PlayPlayerTurn();
                 break;
         }
+        m_isGameOver = IsWinner();
     }
 
     private bool IsFinished(List<TurnManager> target)
@@ -145,11 +155,11 @@ public class GameManager : MonoBehaviour {
 
     private void PlayEnemyTurn()
     {
-        if (m_player.IsTurnComplete)
+        if (IsFinished(new List<TurnManager>(m_objects.ToArray())))
         {
             if(m_enemies.Count == 0)
             {
-                PlayObjectTurn();
+                PlayPlayerTurn();
                 return;
             }
             currentTurn = Turn.Enemy;
@@ -166,11 +176,15 @@ public class GameManager : MonoBehaviour {
 
     private void PlayObjectTurn()
     {
-        if (IsFinished(new List<TurnManager>(m_enemies.ToArray())))
+        bool isturnFinished = (prevTurn == Turn.Player) ? m_player.IsTurnComplete : IsFinished(new List<TurnManager>(m_enemies.ToArray()));
+        if (isturnFinished)
         {
             if (m_objects.Count == 0)
             {
-                PlayPlayerTurn();
+                if (prevTurn == Turn.Player)
+                    PlayEnemyTurn();
+                else
+                    PlayPlayerTurn();
                 return;
             }
             currentTurn = Turn.Object;
@@ -195,4 +209,8 @@ public class GameManager : MonoBehaviour {
     }
     #endregion
     
+    public Mover GetMoverAtPoint(Node node)
+    {
+        return m_allMover.Find(n => n.CuurentNode == node);
+    }
 }

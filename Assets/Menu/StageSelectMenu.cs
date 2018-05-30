@@ -5,21 +5,21 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StageSelectMenu : Menu<StageSelectMenu> {
-
-    [SerializeField]
-    ScreenFader graphic;
-
+    
     bool isLoading;
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
-        graphic.FadeOff();
+        //sync with stage clear data
+        base.OnEnable();
     }
 
     public override void OnBackPressed()
     {
-        if(!isLoading)
+        if (!isLoading)
+        {
             base.OnBackPressed();
+        }
     }
 
     public void LoadLevel(string levelName)
@@ -28,15 +28,15 @@ public class StageSelectMenu : Menu<StageSelectMenu> {
             return;
         isLoading = true;
         StartCoroutine(LoadLevelRoutine(levelName));
-        isLoading = false;
     }
 
     private IEnumerator LoadLevelRoutine(string levelName)
     {
         AsyncOperation async = SceneManager.LoadSceneAsync(levelName,LoadSceneMode.Single);
         async.allowSceneActivation = false;
-        graphic.FadeOn();
+        screenFader.FadeOn();
         yield return new WaitForSeconds(1f);
+        isLoading = false;
         async.allowSceneActivation = true;
         yield return null;
         MenuManager.Instance.CloseAll();

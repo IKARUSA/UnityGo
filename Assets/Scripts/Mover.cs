@@ -5,16 +5,16 @@ using UnityEngine.Events;
 
 public class Mover : MonoBehaviour {
 
-    private Node m_currentNode;
+    protected Node m_currentNode;
     public Node CuurentNode { get { return m_currentNode; } }
 
-    private Node m_nextNode;
+    protected Node m_nextNode;
 
-    private Board m_board;
+    protected Board m_board;
 
     //itween variables
     [SerializeField]
-    float moveTime;
+    protected float moveTime;
 
     [SerializeField]
     float delay;
@@ -29,14 +29,22 @@ public class Mover : MonoBehaviour {
     public bool IsMoving { get { return isMoving; } }
 
     [SerializeField]
+    protected float rotateTime = .25f;
+    [SerializeField]
+    float rotateDelay = 0f;
+    [SerializeField]
+    iTween.EaseType rotateEase = iTween.EaseType.easeOutExpo;
+
+
+    [SerializeField]
     UnityEvent endMoveEvent;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         m_board = Object.FindObjectOfType<Board>();
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         m_currentNode = m_board.GetNodeAt(transform.position);
         if (m_currentNode == null)
@@ -75,13 +83,13 @@ public class Mover : MonoBehaviour {
             "delay", delay));
         if (moveAnim != null)
         {
-            moveAnim.SetFloat("Speed", .2f);
+            moveAnim.SetTrigger("Run");
             moveAnim.transform.rotation = Quaternion.LookRotation(m_nextNode.Coordinate - transform.position);
         }
         yield return new WaitForSeconds(moveTime + delay);
 
         if (moveAnim != null)
-            moveAnim.SetFloat("Speed", 0f);
+            moveAnim.SetTrigger("Stop");
         isMoving = false;
         if (endMoveEvent != null)
             endMoveEvent.Invoke();
@@ -108,5 +116,15 @@ public class Mover : MonoBehaviour {
     }
 
 
-    //private void FaceDirection()
+    protected void FaceDirection(Vector3 targetPoint)
+    {
+        Vector3 relativeVec = targetPoint - transform.position;
+        Quaternion newRotation = Quaternion.LookRotation(relativeVec, Vector3.up);
+        float newY = newRotation.eulerAngles.y;
+        iTween.RotateTo(gameObject, iTween.Hash(
+            "y", newY,
+            "time", rotateTime,
+            "delay", rotateDelay,
+            "easetype", rotateEase));
+    }
 }

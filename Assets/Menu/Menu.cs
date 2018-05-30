@@ -38,10 +38,34 @@ public class Menu<T> : Menu where T : Menu<T>
 
 public class Menu : MonoBehaviour
 {
+    [SerializeField]
+    protected ScreenFader screenFader;
 
-	public virtual void OnBackPressed()
+    protected bool isTransitioning = false;
+
+    protected virtual void OnEnable()
     {
+        if (screenFader != null)
+            screenFader.FadeOff();
+    }
+
+    public virtual void OnBackPressed()
+    {
+        if (screenFader != null && !isTransitioning)
+            StartCoroutine(BackRoutine());
+    }
+
+    private IEnumerator BackRoutine()
+    {
+        yield return StartCoroutine(FadeOn());
         MenuManager.Instance.CloseMenu();
     }
     
+    protected IEnumerator FadeOn()
+    {
+        isTransitioning = true;
+        screenFader.FadeOn();
+        yield return new WaitForSeconds(.5f);
+        isTransitioning = false;
+    }
 }

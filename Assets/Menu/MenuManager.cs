@@ -74,11 +74,11 @@ public class MenuManager : MonoBehaviour {
     {
         if(menuInstance != null)
         {
-            if(m_menuStack.Count >= 1)
+            menuInstance.gameObject.SetActive(true);
+            if (m_menuStack.Count >= 1)
             {
                 m_menuStack.Peek().gameObject.SetActive(false);
             }
-            menuInstance.gameObject.SetActive(true);
             m_menuStack.Push(menuInstance);
         }
     }

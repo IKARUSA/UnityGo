@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour {
 
-    GameManager m_gameManager;
+    protected GameManager m_gameManager;
 
     protected bool m_isTurnComplete = false;
     public bool IsTurnComplete { get { return m_isTurnComplete; } set { m_isTurnComplete = value; } }

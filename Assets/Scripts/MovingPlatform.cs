@@ -52,9 +52,15 @@ public class MovingPlatform : MonoBehaviour {
         }
         yield return new WaitForSeconds(.2f);
         //이동
-        if(m_node.Contains(m_board.PlayerNode))
+        foreach(Node n in m_node)
         {
-            BindPlayer();
+            if (m_gameManager == null)
+                break;
+            Mover mover = m_gameManager.GetMoverAtPoint(n);
+            if(mover != null)
+            {
+                BindMover(mover);
+            }
         }
         if(nextSpotIndex >= spotToMove.Count)
         {
@@ -68,30 +74,35 @@ public class MovingPlatform : MonoBehaviour {
             "easetype", easeType,
             "time", moveTime,
             "delay", delay));
+        iTween.RotateTo(gameObject, iTween.Hash(
+            "y", nextXform.rotation.eulerAngles.y,
+            "easetype", easeType,
+            "time", moveTime,
+            "delay", delay));
         yield return new WaitForSeconds(moveTime+delay);
         nextSpotIndex++;
         //노드 상태 업데이트
-        UnBindPlayer();
+        UnBindMover();
         foreach(Node n in m_node)
         {
             n.UpdateNodeStatus();
         }
     }
 
-    private void BindPlayer()
+    private void BindMover(Mover m)
     {
-        GameObject player = Object.FindObjectOfType<PlayerManager>().gameObject;
-        iTween.Stop(player);
-        player.transform.position = m_board.PlayerNode.transform.position;
-        player.transform.parent = this.transform;
+        GameObject moveObject = m.gameObject;
+        iTween.Stop(moveObject);
+        moveObject.transform.position = m.CuurentNode.transform.position;
+        moveObject.transform.parent = this.transform;
     }
 
-    private void UnBindPlayer()
+    private void UnBindMover()
     {
-        PlayerManager player = transform.GetComponentInChildren<PlayerManager>();
-        if(player != null)
+        Mover[] movers = transform.GetComponentsInChildren<Mover>();
+        foreach(Mover m in movers)
         {
-            player.transform.SetParent(null);
+            m.transform.SetParent(null);
         }
     }
 }

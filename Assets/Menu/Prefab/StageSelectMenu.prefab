@@ -1913,7 +1913,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -2489,7 +2489,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   solidColor: {r: 0, g: 0, b: 0, a: 1}
   fadeColor: {r: 0, g: 0, b: 0, a: 0}
-  fadeTime: 1
+  fadeTime: 0.5
   delay: 0
   easeType: 21
 --- !u!114 &114431270960788678
@@ -2827,7 +2827,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4a7b47cd0a52ee44b2cbcf052527313, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graphic: {fileID: 114415062859583352}
+  screenFader: {fileID: 114415062859583352}
 --- !u!114 &114554085347820016
 MonoBehaviour:
   m_ObjectHideFlags: 1

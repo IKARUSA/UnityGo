@@ -22,5 +22,5 @@ public class ObjectManager : TurnManager {
         base.PlayTurn();
         m_isTurnComplete = true;
     }
-
+    
 }
