@@ -24,4 +24,6 @@ public class PlayerInput : MonoBehaviour {
             v = Input.GetAxisRaw("Vertical");
         }
     }
+
+    
 }

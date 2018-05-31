@@ -194,4 +194,9 @@ public class Node : MonoBehaviour {
 
         InitNode();
     }
+
+    private void OnMouseDown()
+    {
+        GameObject.FindObjectOfType<PlayerManager>().HandleMouseClick(this);
+    }
 }

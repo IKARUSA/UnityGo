@@ -47,8 +47,24 @@ public class GameMenu : MonoBehaviour {
 
     public void OnNextLevelPressed()
     {
-        //다음레벨이 존재하는지 확인
-        //현재레벨을 클리어했는지 확인
-        //다음레벨 로드
+        if(SceneManager.GetActiveScene().buildIndex < SceneManager.sceneCountInBuildSettings - 1)
+        {
+            if (!isTransitioning)
+                StartCoroutine(LoadNextRoutine());
+        }
+        else
+        {
+            //do nothing;
+        }
+    }
+    IEnumerator LoadNextRoutine()
+    {
+        isTransitioning = true;
+        AsyncOperation async = SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex+1, LoadSceneMode.Single);
+        async.allowSceneActivation = false;
+        fader.FadeOn();
+        yield return new WaitForSeconds(1f);
+        async.allowSceneActivation = true;
+        isTransitioning = false;
     }
 }

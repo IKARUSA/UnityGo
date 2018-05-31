@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 public class Mover : MonoBehaviour {
 
+    protected GameManager m_gameManager;
+
     protected Node m_currentNode;
     public Node CuurentNode { get { return m_currentNode; } }
 
@@ -41,6 +43,7 @@ public class Mover : MonoBehaviour {
 
     protected virtual void Awake()
     {
+        m_gameManager = Object.FindObjectOfType<GameManager>();
         m_board = Object.FindObjectOfType<Board>();
     }
 
@@ -61,7 +64,7 @@ public class Mover : MonoBehaviour {
         {
             Node targetNode;
             targetNode = m_board.GetNodeAt(targetPos);
-            if (targetNode != null && m_currentNode.LinkedNodes.Contains(targetNode))
+            if (targetNode != null && m_currentNode.LinkedNodes.Contains(targetNode) && m_gameManager.GetMoverAtPoint(targetNode) == null)
             {
                 m_nextNode = targetNode;
                 StartCoroutine(MoveRoutine());

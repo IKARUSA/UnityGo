@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
@@ -48,6 +49,8 @@ public class GameManager : MonoBehaviour {
     UnityEvent playLevelEvent;
     [SerializeField]
     UnityEvent endLevelEvent;
+    [SerializeField]
+    UnityEvent gameOverEvent;
 
     private void Awake()
     {
@@ -89,7 +92,7 @@ public class GameManager : MonoBehaviour {
     {
         if (playLevelEvent != null)
             playLevelEvent.Invoke();
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1.5f);
         m_player.Input.InputEnabled = true;
         while(!m_isGameOver){
             yield return null;
@@ -117,6 +120,23 @@ public class GameManager : MonoBehaviour {
     public void PlayLevel()
     {
         m_hasLevelStarted = true;
+    }
+
+    public void GameOver()
+    {
+        m_player.Input.InputEnabled = false;
+        StartCoroutine(GameOverRoutine());
+    }
+
+    public IEnumerator GameOverRoutine()
+    {
+        yield return new WaitForSeconds(.5f);
+        if (gameOverEvent != null)
+        {
+            gameOverEvent.Invoke();
+        }
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     #region turnManaging
