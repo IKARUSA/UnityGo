@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour {
 
+    public enum MoveMode
+    {
+        Rotate,
+        Move,
+        Both
+    }
+    [SerializeField]
+    MoveMode moveMode = MoveMode.Both;
+
     [SerializeField]
     List<Transform> spotToMove;
 
@@ -67,18 +76,24 @@ public class MovingPlatform : MonoBehaviour {
             nextSpotIndex = 0;
         }
         Transform nextXform = spotToMove[nextSpotIndex];
-        iTween.MoveTo(gameObject, iTween.Hash(
-            "x", nextXform.position.x,
-            "y", nextXform.position.y,
-            "z", nextXform.position.z,
-            "easetype", easeType,
-            "time", moveTime,
-            "delay", delay));
-        iTween.RotateTo(gameObject, iTween.Hash(
-            "y", nextXform.rotation.eulerAngles.y,
-            "easetype", easeType,
-            "time", moveTime,
-            "delay", delay));
+        if (moveMode == MoveMode.Both || moveMode == MoveMode.Move)
+        {
+            iTween.MoveTo(gameObject, iTween.Hash(
+                "x", nextXform.position.x,
+                "y", nextXform.position.y,
+                "z", nextXform.position.z,
+                "easetype", easeType,
+                "time", moveTime,
+                "delay", delay));
+        }
+        if (moveMode == MoveMode.Both || moveMode == MoveMode.Rotate)
+        {
+            iTween.RotateTo(gameObject, iTween.Hash(
+                "y", nextXform.rotation.eulerAngles.y,
+                "easetype", easeType,
+                "time", moveTime,
+                "delay", delay));
+        }
         yield return new WaitForSeconds(moveTime+delay);
         nextSpotIndex++;
         //노드 상태 업데이트

@@ -8,9 +8,36 @@ public class StageSelectMenu : Menu<StageSelectMenu> {
     
     bool isLoading;
 
+    [SerializeField]
+    Button[] stageButtons;
+
     protected override void OnEnable()
     {
-        //sync with stage clear data
+        if (stageButtons != null)
+        {
+            int maxLevelCleared = 0;
+            if (PlayerPrefs.HasKey("MaxLevelCleared"))
+            {
+                maxLevelCleared = PlayerPrefs.GetInt("MaxLevelCleared");
+            }
+            else
+            {
+                PlayerPrefs.SetInt("MaxLevelCleared", 0);
+            }
+            for (int i = 0; i < stageButtons.Length; i++)
+            {
+                if (i < maxLevelCleared + 1)
+                {
+                    stageButtons[i].enabled = true;
+                    stageButtons[i].animator.SetTrigger("Normal");
+                }
+                else
+                {
+                    stageButtons[i].enabled = false;
+                    stageButtons[i].animator.SetTrigger("Disabled");
+                }
+            }
+        }
         base.OnEnable();
     }
 

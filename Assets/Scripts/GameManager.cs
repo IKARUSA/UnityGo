@@ -112,6 +112,14 @@ public class GameManager : MonoBehaviour {
     private IEnumerator EndLevelRoutine()
     {
         m_player.Input.InputEnabled = false;
+        if (PlayerPrefs.HasKey("MaxLevelCleared"))
+        {
+            if (SceneManager.GetActiveScene().buildIndex > PlayerPrefs.GetInt("MaxLevelCleared"))
+            {
+                PlayerPrefs.SetInt("MaxLevelCleared", SceneManager.GetActiveScene().buildIndex);
+                PlayerPrefs.Save();
+            }
+        }
         if (endLevelEvent != null)
             endLevelEvent.Invoke();
         yield return null;
